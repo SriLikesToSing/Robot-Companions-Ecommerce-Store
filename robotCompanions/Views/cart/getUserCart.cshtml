@@ -1,0 +1,60 @@
+﻿@model shoppingCart
+@{
+    ViewData["Title"] = "getUserCart";
+}
+
+<div style="width:90;margin:auto">
+    @if(Model!=null && Model.cartDetails!=null && Model.cartDetails.Count>0)
+    {
+        <h3>My Cart</h3>
+
+        <table class="table table-striped">
+            <tr>
+                <th>Robot</th>
+                <th>Image</th>
+                <th>Robot Size</th>
+                <th>Unit Price (Dollars)</th>
+                <th>Total Price</th>
+                <th>Action</th>
+            </tr>
+            @foreach(var item in Model.cartDetails)
+            {
+                <tr>
+                    <td>@item.Robots.robotName</td>
+                    <td>
+                        @if (string.IsNullOrEmpty(item.Robots.image))
+                        {
+                            <img src="/images/noImage.jpg" style="width:80px;height:100px"/>
+                        }
+                        else
+                        {
+                            <img src="/images/noImage.jpg" style="width:80px;height:100px"/>
+                        }
+                    </td>
+
+                    <td>@item.Robots.robotSize.size</td>
+                    <td>@item.Robots.price X @item.quantity</td>
+                    <td>@(item.Robots.price*item.quantity)</td>
+                    <td>
+                        <a class="btn btn-info" href="/cart/addItem?robotId=@item.robotId&&redirect=1">+</a>
+                        <a class="btn btn-info" href="/cart/removeItem?robotId=@item.robotId">-</a>
+                    </td>
+                </tr>
+            }
+        </table>
+
+        <div class="my-2">
+            <h5>Total(Dollars)</h5> 
+            @(Model.cartDetails.Select(item=>item.Robots.price*item.quantity).Sum())
+        </div>
+
+        <div class="my-2">
+            <a class="btn btn-primary" href="/Cart/checkout">Checkout</a>
+        </div>
+    }
+    else
+    {
+        <h5>Cart is empty</h5>
+
+    }
+</div>

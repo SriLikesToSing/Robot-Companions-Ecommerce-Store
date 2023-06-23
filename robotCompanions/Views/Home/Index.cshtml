@@ -1,0 +1,88 @@
+﻿@model robotDisplayModel 
+
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<head>
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<div class="my-2">
+    <form asp-action="Index">
+            <form class="row row-cols-lg-auto g-3 align-items-center">
+
+  <div class="col-12">
+    <label class="visually-hidden" for="sizeId">Robot Form Factors</label>
+    <select class="form-select" id="sizeId" name="sizeId">
+      <option selected>Robot Size</option>
+        @foreach (var robotSize in Model.robotSizes)
+        {
+            <option selected="@(robotSize.Id == Model.robotSizeId)" value="@robotSize.Id">@robotSize.size</option>
+            
+        }
+    </select>
+  </div>
+
+  <div class="col-12">
+    <label class="visually-hidden" for="sTerm">Search By Robot Form Factor</label>
+    <div class="input-group">
+      <div class="input-group-text"></div>
+      <input type="text" class="form-control" id="sTerm" value="@Model.sTerm" name="sTerm" placeholder="Search By Robot Name">
+    </div>
+  </div>
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a href="Home/Index" class="btn btn-primary">Reset</a>
+  </div>
+</form>
+        
+    </form>
+</div>
+<div class="w-100 mt-5 d-flex flex-wrap">
+    @foreach (var robot in Model.Robots){
+        <div class="card text-bg-dark mx-3 mb-4" style="width: 11rem;">
+            @if (string.IsNullOrEmpty(robot.image))
+            {
+                <img style="width:100%;height:180px" src="/images/noImage.jpg" class="card-img-top" alt="...">
+            }
+            else
+            {
+               <img src="/images/@robot.image" class="card-img-top" alt="...">
+            }
+        <div class="card-body">
+            <h5 class="card-title">@robot.robotName</h5>
+            <p class="card-text">
+                Robot Size: @robot.robotSize.size
+                <br>
+                Description: @robot.description
+                <br>
+                Price: $@robot.price
+            <p/>
+            <button type="button" onclick="add(@robot.Id) "class="btn btn-primary">Add to cart</button>
+        </div>
+    </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        async function add(robotId){
+            try {
+                var response = await fetch(`/cart/addItem?robotId=${robotId}`);
+                if(response.status == 200){
+                    var result = await response.json();
+                    var cartCountEl = document.getElementById("cartCount");
+                    cartCountEl.innerHTML = result;
+                    window.location.href = "#cartCount";
+
+                }
+            }
+            catch(err){
+                console.log(err);
+            }
+        }
+    </script>
+}

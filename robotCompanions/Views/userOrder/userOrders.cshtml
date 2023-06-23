@@ -1,0 +1,74 @@
+﻿@model IEnumerable<Order>
+@{
+    ViewData["Title"] = "getUserCart";
+}
+<div style="width:90;margin:auto">
+    
+    <a href="/Identity/Account/Manage" class="btn btn-secondary my-2">Back</a>
+
+    <h4>My Orders</h4>
+    @if (Model != null && Model.Count() > 0)
+    {
+        <table class="table table-striped">
+            <tr>
+                <th>orderDate</th>
+                <th>orderStatus</th>
+            </tr>
+
+            @foreach(var order in Model)
+            {
+                <tr>
+                    <td>@order.createDate.ToString("dd-MM-yyyy")</td>
+                    <td>@order.orderStatus.statusName</td>
+                    @if(order.orderDetails!=null && order.orderDetails.Count > 0)
+                    {
+                        <td>
+                        <table class="table table-striped">
+                            <tr>
+                                <th>Robot</th>
+                                <th>Image</th>
+                                <th>Robot Size</th>
+                                <th>Unit Price (Dollars)</th>
+                                <th>Total Price</th>
+                                <th>Action</th>
+                            </tr>
+                            @foreach (var item in order.orderDetails)
+                            {
+                                <tr>
+                                    <td>@item.robot.robotName</td>
+                                    <td>
+                                        @if (string.IsNullOrEmpty(item.robot.image))
+                                        {
+                                            <img src="/images/noImage.jpg" style="width:80px;height:100px" />
+                                        }
+                                        else
+                                        {
+                                            <img src="/images/noImage.jpg" style="width:80px;height:100px" />
+                                        }
+                                    </td>
+
+                                    <td>@item.robot.robotSize.size</td>
+                                    <td>@item.robot.price X @item.quantity</td>
+                                    <td>@(item.robot.price * item.quantity)</td>
+                                    <td>
+                                        <a class="btn btn-info" href="/cart/addItem?robotId=@item.robotId&&redirect=1">+</a>
+                                        <a class="btn btn-info" href="/cart/removeItem?robotId=@item.robotId">-</a>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                        </td>
+                    }
+                </tr>
+            }
+
+        </table>
+        
+    }
+    else
+    {
+        <h5>No Orders</h5>
+
+    }
+</div>
+
