@@ -7,7 +7,6 @@ namespace robotCompanions.Models
     public class orderDetails
     {
         public int Id { get; set; }
-        [Required]
         public int orderId { get; set; }
         [Required]
         public int robotId { get; set; }

@@ -32,7 +32,6 @@ namespace robotCompanions.Models.Repositories
             {
                 if (string.IsNullOrEmpty(userId))
                     throw new Exception("user it not logged in.");
-                Debug.WriteLine("WTF");
                 var cart = await getCart(userId);
                 if (cart is null)
                 {
@@ -115,27 +114,32 @@ namespace robotCompanions.Models.Repositories
             return shoppingCart;
         }
 
-
-        public async Task<bool> doCheckout()
+        public async Task<string> doCheckout()
         {
             using var transaction = _db.Database.BeginTransaction();
             try
             {
                 var userId = getUserId();
                 if (string.IsNullOrEmpty(userId))
+                {
                     throw new Exception("User is not logged in.");
+                }
                 var cart = await getCart(userId);
-                if(cart is null)
+                if (cart is null)
+                {
                     throw new Exception("invalid cart");
+                }
                 var cartDetails = _db.cartDetails.Where(a => a.shoppingCartId == cart.Id).ToList();
                 if (cartDetails.Count == 0)
+                {
                     throw new Exception("Cart is empty.");
+                }
 
                 var order = new Order
                 {
                     userId = userId,
                     createDate = DateTime.UtcNow,
-                    orderStatusId= 1
+                    orderStatusId=3,
                 };
 
                 _db.order.Add(order);
@@ -156,20 +160,16 @@ namespace robotCompanions.Models.Repositories
                 _db.cartDetails.RemoveRange(cartDetails);
                 _db.SaveChanges();
                 transaction.Commit();
-                return true;
+                return "WORKED";
 
             }catch(Exception ex)
             {
-                return false; 
-
+                return ex.ToString(); 
             }
         }
 
-
-
         public async Task<shoppingCart> getCart(string userId)
         {
-            Debug.WriteLine("GET THE CART BRO...");
             var cart = await _db.shoppingCart.FirstOrDefaultAsync(x => x.userId == userId);
             return cart;
         } 
@@ -187,7 +187,7 @@ namespace robotCompanions.Models.Repositories
                               select new { cartDetail.Id }
                               ).ToListAsync();
 
-            return data.Count;
+            return data.Count-1;
         }
 
         private string getUserId()

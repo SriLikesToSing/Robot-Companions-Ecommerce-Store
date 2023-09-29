@@ -11,10 +11,8 @@ namespace robotCompanions.Models
         [Required]
         public string userId { get; set; }
         public DateTime createDate { get; set; } = DateTime.UtcNow;
-        [Required]
         public int orderStatusId { get; set; }
         public bool isDeleted { get; set; } = false;
-
         public orderStatus orderStatus { get; set; }
 
         public List<orderDetails> orderDetails { get; set; }

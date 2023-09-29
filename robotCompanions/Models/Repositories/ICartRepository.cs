@@ -6,7 +6,7 @@
         Task<int> removeItem(int robotId);
         Task<shoppingCart> getUserCart();
         Task<int> getCartItemCount(string userId = "");
-        Task<bool> doCheckout();
+        Task<string> doCheckout();
         Task<shoppingCart> getCart(string userId);
     }
 }

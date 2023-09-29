@@ -15,7 +15,6 @@ namespace robotCompanions.Controllers
         }
         public async Task<IActionResult> addItem(int robotId, int qty = 1, int redirect=0)
         {
-            Debug.WriteLine("WHATS UP BITCH ");
             var cartCount = await _cartRepo.addItem(robotId, qty);
             if (redirect == 0)
                 return Ok(cartCount);
@@ -36,12 +35,13 @@ namespace robotCompanions.Controllers
 
         public async Task<IActionResult> checkout()
         {
-            bool isCheckedOut = await _cartRepo.doCheckout();
-            if (!isCheckedOut)
-                throw new Exception("Something happen in server side");
-            return RedirectToAction("Index", "Home");
-            
+            string isCheckedOut = await _cartRepo.doCheckout();
 
+            if(isCheckedOut != "WORKED")
+            {
+                throw new Exception(isCheckedOut);
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         public async Task<IActionResult> getTotalItemInCart()

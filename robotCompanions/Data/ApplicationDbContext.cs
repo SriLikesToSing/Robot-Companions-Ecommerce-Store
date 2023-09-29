@@ -19,5 +19,8 @@ namespace robotCompanions.Data
 
         public DbSet<orderStatus> orderStatus { get; set; }
         public DbSet<robotSize> robotSize { get; set; }
+
+
+
     }
 }
